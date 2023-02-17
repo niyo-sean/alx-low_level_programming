@@ -1,4 +1,7 @@
+#include <stdlib.h>
+#include <time.h>
 #include <stdio.h>
+/* Add  Headers of time and rand */
 
 /**
  * main - Program print rondom number for variable
@@ -9,10 +12,8 @@ int main(void)
 {
 	int n;
 
-	n = 98;
-	n = -98;
-	n = 0;
-
+	srand(time(0));
+	n = rand() - RAND_MAX / 2;
 	/* set conditions */
 	if (n > 0)
 		printf("%d is positive\n", n);
