@@ -1,42 +1,35 @@
 #include <stdio.h>
 
 /**
- *main - program prints  all possible combinations of two two-digit numbers
- *Return: Always 0 (Success)
+ * main - Prints the four digits combination meaningfully
+ *
+ * Return: 0 in success
+ *
  */
-
 int main(void)
 {
-int tens;
-int ones;
-int t;
-int o;
+	int a;
+	int b;
 
-for (tens = '0'; tens <= '9'; tens++) /*print first two digit combo*/
-{
-for (ones = '0'; ones <= '9'; ones++)
-{
-for (t = tens; t <= '9'; t++) /*print second of pair*/
-{
-for (o = ones + 1; o <= '9'; o++)
-{
-putchar(tens);
-putchar(ones);
-putchar(' ');
-putchar(t);
-putchar(o);
+	for (a = 0; a <= 98; a++)
+	{
+		for (b = a + 1; b <= 99; b++)
+		{
+			putchar((a / 10) + '0');
+			putchar((a % 10) + '0');
+			putchar(' ');
+			putchar((b / 10) + '0');
+			putchar((b % 10) + '0');
 
-if (!((tens == '9' && ones == '8') && (t == '9' && o == '9')))
-{
-putchar(',');
-putchar(' ');
-}
-}
-o = '0';
-}
-}
-}
-putchar('\n');
+			if (a == 98 && b == 99)
+				continue;
 
-return (0);
+			putchar(',');
+			putchar(' ');
+		}
+	}
+	putchar('\n');
+
+	/* Return: Return 0 in success */
+	return (0);
 }
