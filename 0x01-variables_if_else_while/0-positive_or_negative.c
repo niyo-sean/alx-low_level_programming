@@ -9,7 +9,9 @@ int main(void)
 {
 	int n;
 
-	n = 2;
+	n = 98;
+	n = -98;
+	n = 0;
 
 	/* set conditions */
 	if (n > 0)
