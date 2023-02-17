@@ -9,6 +9,8 @@ int main(void)
 {
 	int n;
 
+	n = 2;
+
 	/* set conditions */
 	if (n > 0)
 		printf("%d is positive\n", n);
