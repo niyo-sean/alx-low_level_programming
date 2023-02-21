@@ -6,11 +6,11 @@
  */
 void time_teble(void)
 {
-	int x, y, u, d;
+	int x, y, z, u, d;
 
-	for (x = 0 x <= 9; x++)
+	for (x = 0; x <= 9; x++)
 	{
-	for (y = 0 y <= 9; y++)
+	for (y = 0 y; <= 9; y++)
 	{
 	z = y * x;
 	if (z > 9)
