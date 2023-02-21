@@ -10,7 +10,7 @@ void time_teble(void)
 
 	for (x = 0; x <= 9; x++)
 	{
-	for (y = 0 y; <= 9; y++)
+	for (y = 0; y <= 9; y++)
 	{
 	z = y * x;
 	if (z > 9)
@@ -22,9 +22,7 @@ void time_teble(void)
 	_putchar(d + '0');
 	_putchar(u + '0');
 	}
-	else
-	{
-	if (y != 0);
+	else if (y != 0);
 	{
 	_putchar(44);
 	_putchar(32);
@@ -34,5 +32,4 @@ void time_teble(void)
 	}
 	}
 	_putchar('\n');
-	}
 }
