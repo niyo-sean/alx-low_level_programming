@@ -10,13 +10,14 @@
  */
 size_t print_listint(const listint_t *h)
 {
+	const listint_t *bona = h;
 	size_t count = 0;
 	/*while loop to set condition */
-	while (h != NULL)
+	while (bona != NULL)
 	{
-		printf("\n %d", h->n);
-		h = h->next;
-		count++;
+		printf("\n %d", bona->n);
+		count+= 1;
+		bona = bona->next;
 	}
 	return (count);
 }
