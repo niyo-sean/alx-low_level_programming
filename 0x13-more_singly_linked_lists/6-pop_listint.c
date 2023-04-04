@@ -18,6 +18,7 @@ int pop_listint(listint_t **head)
 	y = *head;
 	*head = y->next;
 	n = y->n;
+	free(y);
 	return (n);
 }
 /* a NIYIBIZI Bonaventure codes */
