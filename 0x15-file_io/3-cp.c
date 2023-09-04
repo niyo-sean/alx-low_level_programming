@@ -2,66 +2,91 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <stdarg.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #define BUFFER_SIZE 1024
 
 /**
- * error_exit - Prints an error message and exits with the specified code
- * @exit_code: The exit code
- * @format: The format string for the error message
- * @...: Additional arguments for the format string
+ * exit_with_error - Exit the program with an error message.
+ * @message: The error message format.
+ * @file_name: The name of the file related to the error.
+ * @exit_code: The exit code to use when terminating the program.
  */
-void error_exit(int exit_code, const char *format, ...)
+void exit_with_error(const char *message, const char *file_name, int exit_code)
 {
-	va_list args;
-
-	va_start(args, format);
-	dprintf(STDERR_FILENO, format, args);
-	va_end(args);
+	dprintf(STDERR_FILENO, message, file_name);
 	exit(exit_code);
 }
+
 /**
- * main - Entry point for the cp program
- * @argc: The number of command-line arguments
- * @argv: An array of command-line argument strings
- *
- * Description: This program copies the content of one file to another file.
- *
- * Return: 0 on success, or error codes as specified in the prompt.
+ * copy_file - Copy the content of one file to another.
+ * @file_from: The source file.
+ * @file_to: The destination file.
  */
-int main(int argc, char *argv[])
+void copy_file(const char *file_from, const char *file_to)
 {
-	int file_from, file_to, bytes_read, bytes_written;
-	char buffer[BUFFER_SIZE];
+	int fd_from = open(file_from, O_RDONLY);
 
-	if (argc != 3)
-		error_exit(97, "Usage: cp file_from file_to\n");
-
-	file_from = open(argv[1], O_RDONLY);
-	if (file_from == -1)
-		error_exit(98, "Error: Can't read from file %s\n", argv[1]);
-
-	file_to = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, 0664);
-	if (file_to == -1)
-		error_exit(99, "Error: Can't write to file %s\n", argv[2]);
-
-
-	while ((bytes_read = read(file_from, buffer, BUFFER_SIZE)) > 0)
+	if (fd_from == -1)
 	{
-		bytes_written = write(file_to, buffer, bytes_read);
+		exit_with_error("Error: Can't read from file %s\n", file_from, 98);
+	}
+
+	int fd_to = open(file_to, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR
+		      |	| S_IWUSR | S_IRGRP | S_IROTH);
+	if (fd_to == -1)
+	{
+		close(fd_from);
+		exit_with_error("Error: Can't write to file %s\n", file_to, 99);
+	}
+
+	char buffer[BUFFER_SIZE];
+	ssize_t bytes_read, bytes_written;
+
+	while ((bytes_read = read(fd_from, buffer, BUFFER_SIZE)) > 0)
+	{
+		bytes_written = write(fd_to, buffer, bytes_read);
 		if (bytes_written == -1)
-			error_exit(99, "Error: Can't write to file %s\n", argv[2]);
+		{
+			close(fd_from);
+			close(fd_to);
+			exit_with_error("Error: Can't write to file %s\n", file_to, 99);
+		}
 	}
 
 	if (bytes_read == -1)
-		error_exit(98, "Error: Can't read from file %s\n", argv[1]);
+	{
+		close(fd_from);
+		close(fd_to);
+		exit_with_error("Error: Can't read from file %s\n", file_from, 98);
+	}
 
-	if (close(file_from) == -1)
-		error_exit(100, "Error: Can't close fd %d\n", file_from);
+	if (close(fd_from) == -1 || close(fd_to) == -1)
+	{
+		exit_with_error("Error: Can't close file descriptor\n", "", 100);
+	}
+}
 
-	if (close(file_to) == -1)
-		error_exit(100, "Error: Can't close fd %d\n", file_to);
+/**
+ * main - Entry point of the program.
+ * @argc: The number of command-line arguments.
+ * @argv: An array of command-line argument strings.
+ *
+ * Return: 0 on success, or the appropriate error code on failure.
+ */
+int main(int argc, char *argv[])
+{
+	if (argc != 3)
+	{
+		dprintf(STDERR_FILENO, "Usage: %s file_from file_to\n", argv[0]);
+		return (97);
+	}
+
+	const char *file_from = argv[1];
+	const char *file_to = argv[2];
+
+	copy_file(file_from, file_to);
 
 	return (0);
 }
